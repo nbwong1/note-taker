@@ -2,9 +2,7 @@
 const express = require("express");
 const { appendFile, fstat } = require("fs");
 const path = require("path");
-const noteData = require("./db/notes.json");
-const fs = require('fs');
-
+const activeNote = require("./db/notes.json");
 const PORT = 3000;
 
 
@@ -16,21 +14,17 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // get the index.html
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-//get notes.html
-app.get("/notes", (req, res) => {
-  res.sendFile(path.join(__dirname, "notes.html"));
-});
-
-app.listen(PORT, () => {
-  console.log(`Example app listening at http://localhost:${PORT}`);
-});
+//get request for notes
+app.get('/notes', (req, res) => 
+    res.sendFile(path.join(__dirname, '/public/notes.html'))
+);
 
 // post request to add note
-app.post('/api/notes', (req, res) => {
+app.post('/notes', (req, res) => {
   console.info(`${req.method} request received to add note`);
 
   const { title, text } = req.body;
@@ -39,11 +33,10 @@ app.post('/api/notes', (req, res) => {
     const newNote = {
       title,
       text,
+      note_id: uuid(),
     };
 
-    const reviewString = JSON.stringify(newNote);
-
-    fs
+    // const reviewString = JSON.stringify(newNote);
 
     const response = {
       status: "success",
@@ -55,4 +48,8 @@ app.post('/api/notes', (req, res) => {
   } else {
     res.status(500).json("Error in posting note");
   }
+});
+
+app.listen(PORT, () => {
+    console.log(`Example app listening at http://localhost:${PORT}`);
 });

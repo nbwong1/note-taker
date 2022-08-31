@@ -1,9 +1,12 @@
 // use express, path, and PORT.
 const express = require("express");
-const { appendFile } = require("fs");
+const { appendFile, fstat } = require("fs");
 const path = require("path");
 const noteData = require("./db/notes.json");
+const fs = require('fs');
+
 const PORT = 3000;
+
 
 const app = express();
 // set up express app to handle data parsing
@@ -18,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 //get notes.html
-app.get("/api/notes", (req, res) => {
+app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "notes.html"));
 });
 
@@ -27,7 +30,7 @@ app.listen(PORT, () => {
 });
 
 // post request to add note
-app.post("/api/notes", (req, res) => {
+app.post('/api/notes', (req, res) => {
   console.info(`${req.method} request received to add note`);
 
   const { title, text } = req.body;
@@ -37,6 +40,10 @@ app.post("/api/notes", (req, res) => {
       title,
       text,
     };
+
+    const reviewString = JSON.stringify(newNote);
+
+    fs
 
     const response = {
       status: "success",
